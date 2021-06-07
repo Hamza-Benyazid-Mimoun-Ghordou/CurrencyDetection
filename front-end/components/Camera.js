@@ -14,11 +14,14 @@ export default function Cam() {
       setHasPermission(status === 'granted');
     })();
   }, []);
-  const predict = async (event) => {
+  const predict = (event) => {
     if (ref) {
-        await ref.current.takePictureAsync().then((dt) => {
+        ref.current.takePictureAsync({base64 : true}).then((dt) => {
             setData(dt);
-            alert(data.uri);
+            //alert(data.uri);
+            //img = new Image(data.uri);
+            console.log(data.uri);
+            alert(data.uri)
         })
 
     }
@@ -41,7 +44,7 @@ export default function Cam() {
             <Text style={styles.text}> Flip </Text>
 
             <PredBut press = {predict}/>
-            <Image srhAe2={data.uri}/>
+            {/*<Image styles={styles.image} srhAe2={data?data.uri:null}/>*/}
 
           </TouchableOpacity>
 
@@ -57,6 +60,11 @@ const styles = StyleSheet.create({
     camera: {
         width: "100%",
         height: "100%",
+        justifyContent: 'flex-end',
+    },
+    image: {
+        width: "52%",
+        height: "50%",
         justifyContent: 'flex-end',
     }
 })
