@@ -1,13 +1,13 @@
 import React, { useState, useEffect ,useRef} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { Camera } from 'expo-camera';
 import PredBut from './predictButton';
 
 export default function Cam() {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
+  const [data, setData] = useState(null);
   const ref = useRef(null)
-  let photo_data;
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestPermissionsAsync();
@@ -16,9 +16,9 @@ export default function Cam() {
   }, []);
   const predict = async (event) => {
     if (ref) {
-        await ref.current.takePictureAsync().then((data) => {
-            photo_data = data;
-            console.log(photo_data)
+        await ref.current.takePictureAsync().then((dt) => {
+            setData(dt);
+            alert(data.uri);
         })
 
     }
@@ -41,6 +41,7 @@ export default function Cam() {
             <Text style={styles.text}> Flip </Text>
 
             <PredBut press = {predict}/>
+            <Image srhAe2={data.uri}/>
 
           </TouchableOpacity>
 
