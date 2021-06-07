@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
         position: 'relative',
         bottom:10,
         backgroundColor : '#00ffff',
-        marginBottom: 20,
+        marginVertical: 20,
         marginHorizontal:100,
         borderRadius : 30,
         opacity:0.5
