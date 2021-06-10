@@ -4,6 +4,7 @@ from tensorflow.keras.preprocessing import image
 import tensorflow as tf
 from rest_framework.response import Response
 from rest_framework import status
+import os
 
 CLASSES = ["10 dh","100 dh","20 dh","200 dh","5 dh","50 dh"]
 model_name = '/model3.h5'
@@ -25,14 +26,16 @@ class prediction(models.Model):
         proba = model.predict(images, batch_size=10)
         predict_index = proba[0].argmax()
         max_proba = max(proba[0])
-        if max_proba < 0.99:
+        if max_proba < 0.85:
             predict = "none"
-            # num_corr+=1
         else:
             predict = CLASSES[predict_index]
         response = {
                     'result' : predict,
                     'probability': max_proba
                 }
+        os.remove(self.img.name)
+        prediction.objects.all().delete()
+        
         return Response(response, status=status.HTTP_200_OK)
 
