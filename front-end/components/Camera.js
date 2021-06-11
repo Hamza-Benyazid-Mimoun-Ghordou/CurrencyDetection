@@ -1,9 +1,11 @@
-import React, { useState, useEffect ,useRef} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import React from 'react';
+import axios from 'axios';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
+import * as ImageManipulator from 'expo-image-manipulator';
 import PredBut from './predictButton';
 
-class Cam {
+class Cam extends React.Component {
     styles = StyleSheet.create({
         camera: {
             width: "100%",
@@ -18,58 +20,57 @@ class Cam {
     })
     state = {
         hasPermission: null,
-        type: useState(Camera.Constants.Type.back),
+        type: Camera.Constants.Type.back,
         data : {}
     }
 
-    ref = useRef(null);
+    ref = React.createRef();
     
 
-    componentDidMount(){
+    async componentDidMount(){
           const { status } = await Camera.requestPermissionsAsync();
-          setHasPermission(status === 'granted');
+          let st = this.state;
+          st.hasPermission = (status === 'granted')
+          this.setState(st);
     }
     predict = (event) => {
-      if (ref) {
-          ref.current.takePictureAsync({onPictureSaved: uploadimage})
+      if (this.ref) {
+          this.ref.current.takePictureAsync({onPictureSaved: this.uploadimage})
       }
     }
   
-    uploadimage =(dt) => {
-      console.log(dt.uri)
+    uploadimage = async (dt) => {
+      const manipResult = await ImageManipulator.manipulateAsync(
+        dt.uri,
+        [{ resize: { width: 256, height: 256 } }],
+        {compress: 1, format: ImageManipulator.SaveFormat.PNG }
+      );
       var dtform = new FormData();
-      dtform.append('file', { uri: dt.uri, name: 'picture.jpg', type: 'image/jpg' });
-      const config = {
-          method: 'POST',
-          body: dtform,
-          headers:{
-            'accept':'application/json',
-            'content-type':'application/json'
-          }
-      };
-      await fetch('http://53363ff83628.ngrok.io/v1/models/currency_recognition_model:predict', config).then(responseData => {
-          console.log(responseData);
+      dtform.append('file', { uri: manipResult.uri, name: 'picture.jpg', type: 'image/jpg' });
+      axios.post('https://08e3d4a3e56b.ngrok.io/predict/predict/predict/', dtform).then(responseData => {
+          alert(responseData.data.result)
+          console.log(responseData.data)
       })
-      .catch(err => { console.log(err.status, err.message); });
+      .catch(err => { console.log(err); });
     }
 
     render(){
       if (this.state.hasPermission === null) {
         return <View />;
       }
-      if (hasPermission === false) {
+      if (this.state.hasPermission === false) {
         return <Text>No access to camera</Text>;
       }
       return (
-        <View style={styles.container}>
-          <Camera
-            ref = {ref}
-            style={styles.camera} type={type}>
-            <View style={styles.buttonContainer}>
+        <View style={this.styles.container}>
+          <Camera pictureSize = "small"
+            ref = {this.ref}
+            style={this.styles.camera} type={this.type}>
+            <View style={this.styles.buttonContainer}>
               <TouchableOpacity
-                style={styles.button}
+                style={this.styles.button}
                 >
-                <PredBut press = {predict}/>
+                <PredBut press = {this.predict}/>
     
               </TouchableOpacity>
     
