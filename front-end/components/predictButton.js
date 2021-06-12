@@ -1,34 +1,32 @@
-import React, { useState } from 'react';
-import {StyleSheet, View, Pressable, Text} from 'react-native';
+import React from 'react';
+import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 
 
 const PredBut = (props) => {
     return (
-        <Pressable onPress={props.press} style = {styles.buttonBody}>
-            <Text style = {styles.buttonText}>
-                Predict
-            </Text>
-        </Pressable>
+        <TouchableOpacity 
+            onPress={()=>props.press()}
+            style = {styles.buttonBody}
+        />
     )
 }
 
 const styles = StyleSheet.create({
     buttonBody: {
+        justifyContent: 'center',
         alignItems: "center",
         position: 'relative',
         bottom:10,
-        backgroundColor : '#00ffff',
+        backgroundColor : 'white',
         marginVertical: 20,
-        marginHorizontal:100,
-        borderRadius : 30,
-        opacity:0.5
-
+        marginHorizontal:'40.5%',
+        height: 70,
+        width: 70,
+        borderRadius : 35,
+        opacity:0.7,
+        borderWidth: 4,
+        borderColor: '#999'
     },
-    buttonText: {
-        padding:20,
-        fontSize:20,
-        fontWeight : "bold",
-    }
 });
 
 export default PredBut
