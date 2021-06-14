@@ -32,8 +32,8 @@ class Cam extends React.Component {
     }
     predict = async (event) => {
       if (this.ref) {
-          this.setState({...this.state,loading:true});
-          await this.ref.current.takePictureAsync({onPictureSaved: this.uploadimage})
+        await this.ref.current.takePictureAsync({onPictureSaved: this.uploadimage})
+        this.setState({...this.state,loading:true});
           //this.ref.current.pausePreview();
           //this.ref.current.resumePreview();
       }
