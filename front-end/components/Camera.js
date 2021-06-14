@@ -18,7 +18,9 @@ class Cam extends React.Component {
         hasPermission: null,
         type: Camera.Constants.Type.back,
         data : {},
-        loading : false
+        loading : false,
+        flash : "off",
+        lastpress: new Date().getTime(),
     }
 
     ref = React.createRef();
@@ -29,6 +31,14 @@ class Cam extends React.Component {
     }
     predict = (event) => {
       if (this.ref) {
+          var delta = new Date().getTime() - this.state.lastPress;
+          if(delta < 200) {
+            this.predict_with_flash(event);
+          }
+          this.setState({
+            ...this.state,
+            lastPress: new Date().getTime()
+          });
           this.setState({...this.state,loading:true});
           this.ref.current.takePictureAsync({onPictureSaved: this.uploadimage})
           //this.ref.current.pausePreview();
@@ -46,11 +56,16 @@ class Cam extends React.Component {
       var dtform = new FormData();
       dtform.append('file', { uri: manipResult.uri, name: 'picture.jpg', type: 'image/jpg' });
       axios.post('https://824207d32651.ngrok.io/predict/predict/predict/', dtform).then(responseData => {
-          this.setState({...this.state,loading:false})
-          alert(responseData.data.result)
-          console.log(responseData.data)
+          this.setState({...this.state,loading:false, flash:"off"})
+          alert(responseData.data.result);
+          console.log(responseData.data);
       })
       .catch(err => { console.log(err); });
+    }
+    predict_with_flash = async (event) => {
+        this.setState({...this.state, flash:"on"});
+        this.setState({...this.state,loading:true});
+        await this.ref.current.takePictureAsync({onPictureSaved: this.uploadimage})
     }
 
     render(){
@@ -64,11 +79,13 @@ class Cam extends React.Component {
         <View style={this.styles.container}>
           <Camera pictureSize = "small"
             ref = {this.ref}
-            style={this.styles.camera} type={this.type}>
+            style={this.styles.camera} type={this.type}
+            flashMode={this.state.flash}
+            ratio="auto">
               <TouchableOpacity 
                 style={[this.styles.camera]}
                 onLongPress={this.predict}
-                delayLongPress={2000}>
+                delayLongPress={1500}>
               </TouchableOpacity>
             <View style={this.styles.buttonContainer}>
                 <PredBut press = {this.predict}/>

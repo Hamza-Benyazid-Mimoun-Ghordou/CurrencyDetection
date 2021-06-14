@@ -7,7 +7,7 @@ from rest_framework import status
 import os
 
 CLASSES = ["10 dh","100 dh","20 dh","200 dh","5 dh","50 dh"]
-model_name = '/model_v1'
+model_name = '/model3.h5'
 model_weight_name = '/model.weights.best.hdf5'
 model = tf.keras.models.load_model("static/" + 'model' + model_name)
 #model.load_weights(settings.STATIC_URL + 'model' + model_weight_name)
