@@ -84,7 +84,7 @@ class Cam extends React.Component {
               <TouchableOpacity 
                 style={[this.styles.camera]}
                 onLongPress={this.predict}
-                onPress={}
+                onPress={this.predict_with_flash}
                 delayLongPress={1500}>
               </TouchableOpacity>
             <View style={this.styles.buttonContainer}>
