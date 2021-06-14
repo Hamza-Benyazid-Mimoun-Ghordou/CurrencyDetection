@@ -5,6 +5,7 @@ import { Camera } from 'expo-camera';
 import * as ImageManipulator from 'expo-image-manipulator';
 import PredBut from './predictButton';
 import Loading from './Loading';
+import { StatusBar } from 'expo-status-bar';
 
 class Cam extends React.Component {
     styles = StyleSheet.create({
@@ -92,6 +93,7 @@ class Cam extends React.Component {
             </View>
           </Camera>
           {this.state.loading?<Loading/>:null}
+          <StatusBar style="light" hidden={true}/>
         </View>
       );
     }
