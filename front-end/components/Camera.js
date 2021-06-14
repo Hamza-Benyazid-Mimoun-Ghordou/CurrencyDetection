@@ -17,7 +17,7 @@ class Cam extends React.Component {
             width: "52%",
             height: "50%",
             justifyContent: 'flex-end',
-        },
+        }
     })
     state = {
         hasPermission: null,
@@ -34,22 +34,26 @@ class Cam extends React.Component {
     }
     predict = (event) => {
       if (this.ref) {
+          this.setState({...this.state,loading:true});
           this.ref.current.takePictureAsync({onPictureSaved: this.uploadimage})
+          //this.ref.current.pausePreview();
+          //this.ref.current.resumePreview();
       }
     }
     uploadimage = async (dt) => {
+      console.log("resizing image ...")
       const manipResult = await ImageManipulator.manipulateAsync(
         dt.uri,
         [{ resize: { width: 256, height: 256 } }],
         {compress: 1, format: ImageManipulator.SaveFormat.PNG }
       );
+      console.log("uploading image ...")
       var dtform = new FormData();
       dtform.append('file', { uri: manipResult.uri, name: 'picture.jpg', type: 'image/jpg' });
-      axios.post('http://2eb6d5ffc867.ngrok.io/predict/predict/predict/', dtform).then(responseData => {
+      axios.post('http://2e632e6647ad.ngrok.io/predict/predict/predict/', dtform).then(responseData => {
           this.setState({...this.state,loading:false})
           alert(responseData.data.result)
           console.log(responseData.data)
-          
       })
       .catch(err => { console.log(err); });
     }
@@ -66,22 +70,11 @@ class Cam extends React.Component {
           <Camera pictureSize = "small"
             ref = {this.ref}
             style={this.styles.camera} type={this.type}>
-            {this.state.loading?<Loading/>:null}
             <View style={this.styles.buttonContainer}>
-              <TouchableOpacity
-                style={this.styles.button}
-                >
-                <PredBut 
-                  press = {()=>{
-                    this.setState({...this.state,loading:true});
-                    this.predict
-                  }} 
-                />
-    
-              </TouchableOpacity>
-    
+                <PredBut press = {this.predict}/>
             </View>
           </Camera>
+          {this.state.loading?<Loading/>:null}
         </View>
       );
     }

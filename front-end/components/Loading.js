@@ -1,28 +1,42 @@
 import React from 'react';
-import {View , Text,StyleSheet } from 'react-native';
+import {View ,ActivityIndicator, Text,StyleSheet,FlatList } from 'react-native';
 
 const Loading =()=>{
     return (
-        <View style={styles.loading}>
-            <Text>Loading...</Text>
+        <View style={styles.loadingView}>
+            <ActivityIndicator size='large' color='black' style={styles.activityIndicator}/>
+            <Text style={styles.loadingText}>Loading...</Text>
         </View>
     );
 };
 
-const styles = StyleSheet.create({        
-    loading: {
-        justifyContent: 'center',
-        alignItems: "center",
-        position: 'relative',
+const styles = StyleSheet.create({
+    loadingText : {
+        color : 'black',
+        alignItems : 'flex-start',
         backgroundColor : 'white',
-        marginVertical: 20,
-        marginHorizontal:'40.5%',
-        height: 100,
-        width: 200,
-        borderRadius : 35,
-        opacity:0.7,
-        borderWidth: 4,
-        borderColor: '#999'
-  }});
+        fontSize : 16,
+
+    },
+    activityIndicator : {
+        alignItems : 'flex-start',
+        backgroundColor : 'white',
+        marginRight : 20
+    },
+    loadingView : {
+        flex : 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        backgroundColor : 'white',
+        margin: 'auto',
+        paddingHorizontal : 70,
+        paddingVertical : 30,
+        position: 'absolute',
+        top: 260,
+        right : 50,
+        borderRadius : 20,
+    }
+});
 
 export default Loading;
