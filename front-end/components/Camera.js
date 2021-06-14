@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity , Button} from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImageManipulator from 'expo-image-manipulator';
 import PredBut from './predictButton';
@@ -20,7 +20,7 @@ class Cam extends React.Component {
         type: Camera.Constants.Type.back,
         data : {},
         loading : false,
-        flash : "off",
+        flash : Camera.Constants.FlashMode.off,
         lastpress: new Date().getTime(),
     }
 
@@ -49,21 +49,25 @@ class Cam extends React.Component {
       var dtform = new FormData();
       dtform.append('file', { uri: manipResult.uri, name: 'picture.jpg', type: 'image/jpg' });
       axios.post('https://824207d32651.ngrok.io/predict/predict/predict/', dtform).then(responseData => {
-          this.setState({...this.state,loading:false, flash:"off"})
+          this.setState({...this.state,loading:false})
           alert(responseData.data.result);
           console.log(responseData.data);
       })
       .catch(err => { console.log(err); });
     }
-    predict_with_flash = async (event) => {
+    activateFlash = async (event) => {
         var delta = new Date().getTime() - this.state.lastPress;
         if(delta < 200) {
-           this.setState({...this.state,flash : (this.state == "on")? "off" : "on"});
+           this.setState({...this.state,flash :(this.state.flash===Camera.Constants.FlashMode.on)
+            ?Camera.Constants.FlashMode.off
+            :Camera.Constants.FlashMode.on
+          });
+        }else{
+          this.setState({
+              ...this.state,
+              lastPress: new Date().getTime()
+          });
         }
-        this.setState({
-            ...this.state,
-            lastPress: new Date().getTime()
-        });
     }
 
     render(){
@@ -83,7 +87,7 @@ class Cam extends React.Component {
               <TouchableOpacity 
                 style={[this.styles.camera]}
                 onLongPress={this.predict}
-                onPress={this.predict_with_flash}
+                onPress={this.activateFlash}
                 delayLongPress={1500}>
               </TouchableOpacity>
             <View style={this.styles.buttonContainer}>
