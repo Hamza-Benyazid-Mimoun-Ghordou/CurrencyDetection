@@ -30,18 +30,10 @@ class Cam extends React.Component {
           const { status } = await Camera.requestPermissionsAsync();
           this.setState({...this.state,hasPermission : (status === 'granted')})
     }
-    predict = (event) => {
+    predict = async (event) => {
       if (this.ref) {
-          var delta = new Date().getTime() - this.state.lastPress;
-          if(delta < 200) {
-            this.predict_with_flash(event);
-          }
-          this.setState({
-            ...this.state,
-            lastPress: new Date().getTime()
-          });
           this.setState({...this.state,loading:true});
-          this.ref.current.takePictureAsync({onPictureSaved: this.uploadimage})
+          await this.ref.current.takePictureAsync({onPictureSaved: this.uploadimage})
           //this.ref.current.pausePreview();
           //this.ref.current.resumePreview();
       }
@@ -64,9 +56,15 @@ class Cam extends React.Component {
       .catch(err => { console.log(err); });
     }
     predict_with_flash = async (event) => {
-        this.setState({...this.state, flash:"on"});
-        this.setState({...this.state,loading:true});
-        await this.ref.current.takePictureAsync({onPictureSaved: this.uploadimage})
+        var delta = new Date().getTime() - this.state.lastPress;
+        if(delta < 200) {
+            this.predict_with_flash(event);
+        }
+        this.setState({
+            ...this.state,
+            lastPress: new Date().getTime()
+        });
+        predict(event);
     }
 
     render(){
@@ -86,6 +84,7 @@ class Cam extends React.Component {
               <TouchableOpacity 
                 style={[this.styles.camera]}
                 onLongPress={this.predict}
+                onPress={}
                 delayLongPress={1500}>
               </TouchableOpacity>
             <View style={this.styles.buttonContainer}>
