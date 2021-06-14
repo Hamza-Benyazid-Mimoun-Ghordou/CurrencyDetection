@@ -1,5 +1,5 @@
 import React from 'react';
-import {View ,ActivityIndicator, Text,StyleSheet,FlatList } from 'react-native';
+import {View ,ActivityIndicator, Text,StyleSheet } from 'react-native';
 
 const Loading =()=>{
     return (
@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
         alignItems : 'flex-start',
         backgroundColor : 'white',
         fontSize : 16,
-
     },
     activityIndicator : {
         alignItems : 'flex-start',
