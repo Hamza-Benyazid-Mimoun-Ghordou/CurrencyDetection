@@ -58,7 +58,7 @@ class Cam extends React.Component {
     predict_with_flash = async (event) => {
         var delta = new Date().getTime() - this.state.lastPress;
         if(delta < 200) {
-           this.predict(event);
+           this.setState({...this.state,flash : (this.state == "on")? "off" : "on"});
         }
         this.setState({
             ...this.state,
