@@ -5,6 +5,7 @@ import { Camera } from 'expo-camera';
 import * as ImageManipulator from 'expo-image-manipulator';
 import PredBut from './predictButton';
 import Loading from './Loading';
+import { StatusBar } from 'expo-status-bar';
 
 class Cam extends React.Component {
     styles = StyleSheet.create({
@@ -68,13 +69,14 @@ class Cam extends React.Component {
               <TouchableOpacity 
                 style={[this.styles.camera]}
                 onLongPress={this.predict}
-                delayLongPress={2000}>
+                delayLongPress={1000}>
               </TouchableOpacity>
             <View style={this.styles.buttonContainer}>
                 <PredBut press = {this.predict}/>
             </View>
           </Camera>
           {this.state.loading?<Loading/>:null}
+          <StatusBar style="light" hidden={true}/>
         </View>
       );
     }
