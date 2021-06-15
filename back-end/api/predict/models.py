@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import os
 
-CLASSES = ["10 dh","100 dh","20 dh","200 dh","5 dh","50 dh"]
+CLASSES = ["10 dirhams","100 dirhams","20 dirhams","200 dirhams","5 dirhams","50 dirhams"]
 model_name = '/model_v1'
 model_weight_name = '/model.weights.best.hdf5'
 model = tf.keras.models.load_model("static/" + 'model' + model_name)
