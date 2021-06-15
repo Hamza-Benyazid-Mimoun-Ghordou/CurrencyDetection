@@ -32,10 +32,12 @@ class Cam extends React.Component {
           const { status } = await Camera.requestPermissionsAsync();
           this.setState({...this.state,hasPermission : (status === 'granted')})
           if (this.state.firstLaunch){
-            Speech.speak("Hi.")
-            Speech.speak("Welcome to currency recognition app.");
-            Speech.speak("To scan your money, long press the screen for one second.");
-            Speech.speak("To activate or deactivate the flash, double click the screen.");
+            Speech.speak(
+              `Bonjour. Bienvenue dans l'application de reconnaissance de monnaie.
+              Pour scanner votre argent, faites une pression longue sur l'écran pendant une seconde.
+              Pour activer ou désactiver le flash, double-cliquez sur l'écran.`,
+              {language : 'fr-FR'}
+              );
             this.setState({...this.state,firstLaunch : false});
           }
     }
@@ -43,28 +45,32 @@ class Cam extends React.Component {
       
       if (this.ref && !this.state.loading) {
         await this.ref.current.takePictureAsync({onPictureSaved: this.uploadimage})
+        this.ref.current.pausePreview();
         this.setState({...this.state,loading:true});
 
-        Speech.speak("Scanning... This might take few seconds.")
-        this.ref.current.pausePreview();
+        Speech.speak("en cours de traiter l'image... Cela peut prendre quelques secondes.",{language : "fr-FR"})
         
       }
     }
     uploadimage = async (dt) => {
-      console.log("resizing image ...");
+      //console.log("resizing image ...");
       const manipResult = await ImageManipulator.manipulateAsync(
         dt.uri,
         [{ resize: { width: 256, height: 256 } }],
         {compress: 1, format: ImageManipulator.SaveFormat.PNG }
       );
-      console.log("uploading image ...");
+      //console.log("uploading image ...");
       var dtform = new FormData();
       dtform.append('file', { uri: manipResult.uri, name: 'picture.jpg', type: 'image/jpg' });
-      axios.post('http://397348c0cd54.ngrok.io/predict/predict/predict/', dtform).then(responseData => {
+      axios.post('http://b69bd6d71ca4.ngrok.io/predict/predict/predict/', dtform).then(responseData => {
           this.setState({...this.state,loading:false})
           //alert(responseData.data.result);
-          Speech.speak("This is "+responseData.data.result)
-          console.log(responseData.data);
+          if (responseData.data.result!='none'){
+            Speech.speak("C'est une pièce de "+responseData.data.result,{language : "fr-FR"})
+          }else{
+            Speech.speak("Désolé, je n'ai pas pu reconnaître cette photo. Essayez à nouveau.",{language:"fr-FR"})
+          }
+          //console.log(responseData.data);
           this.ref.current.resumePreview();
       })
       .catch(err => { console.log(err); });
@@ -74,7 +80,12 @@ class Cam extends React.Component {
         var delta = new Date().getTime() - this.state.lastPress;
         if(delta < 200) {
           var next_flash_state = (this.state.flash==="on")?"off":"on";
-          Speech.speak("   flash "+next_flash_state);
+          var text_to_say = "flash ";
+          text_to_say+=(next_flash_state=="on")?"est activé":"est désactivé";
+          Speech.speak(
+            text_to_say,
+            {language : "fr-FR"}
+          );
           this.setState({...this.state,flash :next_flash_state});
         }else{
           this.setState({
