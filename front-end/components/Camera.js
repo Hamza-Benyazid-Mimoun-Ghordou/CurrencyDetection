@@ -31,7 +31,8 @@ class Cam extends React.Component {
           this.setState({...this.state,hasPermission : (status === 'granted')})
     }
     predict = async (event) => {
-      if (this.ref) {
+      
+      if (this.ref && !this.state.loading) {
         await this.ref.current.takePictureAsync({onPictureSaved: this.uploadimage})
         this.setState({...this.state,loading:true});
           //this.ref.current.pausePreview();
@@ -48,7 +49,7 @@ class Cam extends React.Component {
       console.log("uploading image ...");
       var dtform = new FormData();
       dtform.append('file', { uri: manipResult.uri, name: 'picture.jpg', type: 'image/jpg' });
-      axios.post('https://824207d32651.ngrok.io/predict/predict/predict/', dtform).then(responseData => {
+      axios.post('http://75bf612f4f98.ngrok.io/predict/predict/predict/', dtform).then(responseData => {
           this.setState({...this.state,loading:false})
           alert(responseData.data.result);
           console.log(responseData.data);

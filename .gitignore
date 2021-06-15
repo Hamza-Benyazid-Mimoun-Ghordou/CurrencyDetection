@@ -1,2 +1,8 @@
 /.vscode
 /.expo
+back-end/api/db.sqlite3
+back-end/api/api/settings.py
+back-end/api/api/__pycache__/*
+back-end/api/predict/models.py
+back-end/api/predict/__pycache__/*
+back-end/api/predict/migrations/*
